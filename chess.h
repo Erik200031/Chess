@@ -15,9 +15,11 @@ typedef std::unordered_map<std::string, void(Chess::*)(int, int)> STEP_FUNCTIONS
 class Chess : public Game, private Chess_board
 {
 public:
+
     Chess();
     void play() override;
 private:
+
     bool check_black() const;
     bool check_white() const;
     void mate(bool collor);
@@ -27,12 +29,10 @@ private:
     void view_current_available_steps(int at_x, int at_y);
     void view_current_black_pawn_available_steps(int at_x, int at_y);
     void view_current_white_pawn_available_steps(int at_x, int at_y);
-    void view_current_black_rook_available_steps(int at_x, int at_y);
-    void view_current_white_rook_available_steps(int at_x, int at_y);
+    void view_current_rook_available_steps(int at_x, int at_y);
     void view_current_black_bishop_available_steps(int at_x, int at_y);
     void view_current_white_bishop_available_steps(int at_x, int at_y);
-    void view_current_black_knight_available_steps(int at_x, int at_y);
-    void view_current_white_knight_available_steps(int at_x, int at_y);
+    void view_current_knight_available_steps(int at_x, int at_y);
     void view_current_black_king_available_steps(int at_x, int at_y);
     void view_current_white_king_available_steps(int at_x, int at_y);
     void view_current_black_queen_available_steps(int at_x, int at_y);
