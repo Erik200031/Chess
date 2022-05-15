@@ -51,7 +51,7 @@ Chess_board::Chess_board()
             else if(i == 7 && j == 3) {
                 m_figures[i][j] = std::make_unique<Queen>();
                 m_figures[i][j]->set_collor(WHITE);
-            }
+            }  
         }
     }
 }

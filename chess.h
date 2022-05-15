@@ -30,8 +30,7 @@ private:
     void view_current_black_pawn_available_steps(int at_x, int at_y);
     void view_current_white_pawn_available_steps(int at_x, int at_y);
     void view_current_rook_available_steps(int at_x, int at_y);
-    void view_current_black_bishop_available_steps(int at_x, int at_y);
-    void view_current_white_bishop_available_steps(int at_x, int at_y);
+    void view_current_bishop_available_steps(int at_x, int at_y);
     void view_current_knight_available_steps(int at_x, int at_y);
     void view_current_black_king_available_steps(int at_x, int at_y);
     void view_current_white_king_available_steps(int at_x, int at_y);
@@ -51,6 +50,7 @@ private:
     bool turn;
     bool castling{};
     bool end_game{};
+    bool bad_input{};
     bool pawn_different_steps{};
     ~Chess() = default;
 };
