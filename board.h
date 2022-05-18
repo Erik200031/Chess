@@ -8,7 +8,6 @@
 
 #include "figure.h"
 #include "empty_figure.h"
-#include "available.h"
 
 #define DEFAULT_HEIGHT 8
 #define DEFAULT_WIDTH 8
