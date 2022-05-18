@@ -32,8 +32,7 @@ private:
     void view_current_rook_available_steps(int at_x, int at_y);
     void view_current_bishop_available_steps(int at_x, int at_y);
     void view_current_knight_available_steps(int at_x, int at_y);
-    void view_current_black_king_available_steps(int at_x, int at_y);
-    void view_current_white_king_available_steps(int at_x, int at_y);
+    void view_current_king_available_steps(int at_x, int at_y);
     void view_current_black_queen_available_steps(int at_x, int at_y);
     void view_current_white_queen_available_steps(int at_x, int at_y);
     void change_pawn(int x, int y);
