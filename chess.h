@@ -16,6 +16,7 @@ class Chess : public Game, private Chess_board
 {
 public:
     Chess();
+    ~Chess() = default;
     void play() override;
 private:
     bool check_black(int king_x, int king_y) const;
@@ -27,11 +28,25 @@ private:
     bool check_all_available_steps();
     void view_current_available_steps(int at_x, int at_y);
     void view_current_pawn_available_steps(int at_x, int at_y);
+    void view_current_pawn_initial_steps
+        (int at_x, int at_y, bool (Chess::*ptr)(int, int) const,
+        int step_direction, bool color, const std::string& tmp_steps);
+    void view_current_pawn_not_initial_steps
+        (int at_x, int at_y, bool (Chess::*ptr)(int, int) const,
+        int step_direction, bool color, const std::string& tmp_steps);
+    void view_current_pawn_en_passant_steps
+        (int at_x, int at_y, bool (Chess::*ptr)(int, int) const,
+        int step_direction, bool color, const std::string& tmp_steps,
+        int en_passant_x, int enemy_lat_pawn_step_one, 
+        int enemy_last_pawn_step_two, const std::string& pawn_for_en_passant);
     void view_current_rook_available_steps(int at_x, int at_y);
     void view_current_bishop_available_steps(int at_x, int at_y);
     void view_current_knight_available_steps(int at_x, int at_y);
     void view_current_king_available_steps(int at_x, int at_y);
     void view_current_queen_available_steps(int at_x, int at_y);
+    bool is_legal_move
+        (int at_x, int at_y, int to_x, int to_y,
+         bool color, bool (Chess::*ptr)(int, int) const);
     bool is_king_attackable_by_pawn(int king_x, int king_y, bool color) const;
     bool is_king_attackable_by_knights(int king_x, int king_y, bool color) const;
     bool is_king_attackable_by_rook_or_queen(int king_x, int king_y, bool color) const;
@@ -53,7 +68,6 @@ private:
     bool end_game{};
     bool bad_input{};
     bool pawn_different_steps{};
-    ~Chess() = default;
 };
 
 #endif //CHESS_H
