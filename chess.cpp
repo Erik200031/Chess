@@ -82,6 +82,9 @@ void Chess::input_coordinates()
     castling = false;
     std::pair<int, int> white_king_pos = get_kings_position(WHITE);
     std::pair<int, int> black_king_pos = get_kings_position(BLACK);
+    if(is_all_available_figures_are_kings()) {
+        no_one_win();
+    }
     if(turn == WHITE && check_white(white_king_pos.first, white_king_pos.second) && check_all_available_steps()) {
         mate(BLACK);
     }
@@ -481,14 +484,22 @@ void Chess::view_current_knight_available_steps(int at_x, int at_y)
         ptr = &Chess::check_white;
         color = WHITE;
     }
-    evaluate_post_move(at_x, at_y, at_x + 2, at_y + 1, 2, 1, color, ptr, tmp_steps);
-    evaluate_post_move(at_x, at_y, at_x - 2, at_y + 1, -2, 1, color, ptr, tmp_steps);
-    evaluate_post_move(at_x, at_y, at_x - 2, at_y - 1, -2, -1, color, ptr, tmp_steps);
-    evaluate_post_move(at_x, at_y, at_x + 2, at_y - 1, 2, -1, color, ptr, tmp_steps);
-    evaluate_post_move(at_x, at_y, at_x + 1, at_y + 2, 1, 2, color, ptr, tmp_steps);
-    evaluate_post_move(at_x, at_y, at_x + 1, at_y - 2, 1, -2, color, ptr, tmp_steps);
-    evaluate_post_move(at_x, at_y, at_x - 1, at_y + 2, -1, 2, color, ptr, tmp_steps);
-    evaluate_post_move(at_x, at_y, at_x - 1, at_y - 2, -1, -2, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x + 2, at_y + 1, 2, 1, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x - 2, at_y + 1, -2, 1, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x - 2, at_y - 1, -2, -1, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x + 2, at_y - 1, 2, -1, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x + 1, at_y + 2, 1, 2, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x + 1, at_y - 2, 1, -2, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x - 1, at_y + 2, -1, 2, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x - 1, at_y - 2, -1, -2, color, ptr, tmp_steps);
 }
 
 void Chess::view_current_rook_available_steps(int at_x, int at_y)
@@ -504,122 +515,14 @@ void Chess::view_current_rook_available_steps(int at_x, int at_y)
     }
     std::string tmp_steps = current_available_steps;
     current_available_steps = "";
-    if(verify_coordinates(at_x + 1, at_y)) {
-        std::string tmp = tmp_steps;
-        for(int i = at_x + 1; i < m_figures.size(); ++i) {
-            if(m_figures[i][at_y]->get_figure() == EMPTY ||
-            (m_figures[i][at_y]->get_figure() != EMPTY && 
-            m_figures[i][at_y]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[i][at_y].release());
-                m_figures[i][at_y].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[1] = 8 - i + '0';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[i][at_y].release());
-                m_figures[i][at_y].reset(tmpp.release());
-                if(m_figures[i][at_y]->get_figure() != EMPTY) {
-                    break;
-                }
-            }
-            if(m_figures[i][at_y]->get_figure() != EMPTY && 
-            m_figures[i][at_y]->get_collor() == color) {
-                break;
-            }   
-        }
-    }
-    if(verify_coordinates(at_x - 1, at_y)) {
-        std::string tmp = tmp_steps;
-        for(int i = at_x - 1; i >= 0; --i) {
-            if(m_figures[i][at_y]->get_figure() == EMPTY || 
-            (m_figures[i][at_y]->get_figure() != EMPTY && 
-            m_figures[i][at_y]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[i][at_y].release());
-                m_figures[i][at_y].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[1] = 8 - i + '0';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[i][at_y].release());
-                m_figures[i][at_y].reset(tmpp.release());
-                if(m_figures[i][at_y]->get_figure() != EMPTY) {
-                    break;
-                }
-            }
-            if(m_figures[i][at_y]->get_figure() != EMPTY && 
-            m_figures[i][at_y]->get_collor() == color) {
-                break;
-            }
-        }
-    }
-    if(verify_coordinates(at_x, at_y + 1)) {
-        std::string tmp = tmp_steps;
-        for(int j = at_y + 1; j < m_figures.size(); ++j) {
-            if(m_figures[at_x][j]->get_figure() == EMPTY || 
-            (m_figures[at_x][j]->get_figure() != EMPTY && 
-            m_figures[at_x][j]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[at_x][j].release());
-                m_figures[at_x][j].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[0] = j + 'A';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[at_x][j].release());
-                m_figures[at_x][j].reset(tmpp.release());
-                if(m_figures[at_x][j]->get_figure() != EMPTY) {
-                    break;
-                }
-            }
-            if(m_figures[at_x][j]->get_figure() != EMPTY && 
-            m_figures[at_x][j]->get_collor() == color) {
-                break;
-            }
-        }
-    }
-    if(verify_coordinates(at_x, at_y - 1)) {
-        std::string tmp = tmp_steps;
-        for(int j = at_y - 1; j >= 0; --j) {
-            if(m_figures[at_x][j]->get_figure() == EMPTY || 
-            (m_figures[at_x][j]->get_figure() != EMPTY && 
-            m_figures[at_x][j]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[at_x][j].release());
-                m_figures[at_x][j].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[0] = j + 'A';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[at_x][j].release());
-                m_figures[at_x][j].reset(tmpp.release());
-                if(m_figures[at_x][j]->get_figure() != EMPTY) {
-                 break;
-                }
-            }
-            if(m_figures[at_x][j]->get_figure() != EMPTY && 
-            m_figures[at_x][j]->get_collor() == color) {
-                break;
-            }
-        }
-    }
+    evaluate_post_move_for_rook_queen
+    (at_x, at_y, at_x + 1, at_y, 1, 0, color, ptr, tmp_steps);
+    evaluate_post_move_for_rook_queen
+    (at_x, at_y, at_x - 1, at_y, -1, 0, color, ptr, tmp_steps);
+    evaluate_post_move_for_rook_queen
+    (at_x, at_y, at_x, at_y + 1, 0, 1, color, ptr, tmp_steps);
+    evaluate_post_move_for_rook_queen
+    (at_x, at_y, at_x, at_y - 1, 0, -1, color, ptr, tmp_steps);
 }
 
 void Chess::view_current_bishop_available_steps(int at_x, int at_y)
@@ -635,127 +538,14 @@ void Chess::view_current_bishop_available_steps(int at_x, int at_y)
     }
     std::string tmp_steps = current_available_steps;
     current_available_steps = "";
-    if(verify_coordinates(at_x + 1, at_y + 1)) {
-        std::string tmp = tmp_steps;
-        int i{}, j{};
-        for(i = at_x + 1, j = at_y + 1; i < m_figures.size() && j < m_figures.size(); ++i, ++j) {
-            if(m_figures[i][j]->get_figure() == EMPTY || 
-            (m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[i][j].release());
-                m_figures[i][j].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[0] = j + 'A';
-                    tmp[1] = 8 - i + '0';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[i][j].release());
-                m_figures[i][j].reset(tmpp.release());
-                if(m_figures[i][j]->get_figure() != EMPTY) {
-                    break; 
-                }
-            }
-            if(m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() == color) {
-                break;
-            }   
-        }
-    }
-    if(verify_coordinates(at_x + 1, at_y - 1)) {
-        std::string tmp = tmp_steps;
-        for(int i = at_x + 1, j = at_y - 1; i < m_figures.size() && j >= 0; ++i, --j) {
-            if(m_figures[i][j]->get_figure() == EMPTY || 
-            (m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[i][j].release());
-                m_figures[i][j].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[0] = j + 'A';
-                    tmp[1] = 8 - i + '0';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[i][j].release());
-                m_figures[i][j].reset(tmpp.release());
-                if(m_figures[i][j]->get_figure() != EMPTY) {
-                    break; 
-                }
-            }
-            if(m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() == color) {
-                break;
-            } 
-        }
-    }
-    if(verify_coordinates(at_x - 1, at_y + 1)) {
-        std::string tmp = tmp_steps;
-        for(int i = at_x - 1, j = at_y + 1; i >= 0  && j < m_figures.size(); --i, ++j) {
-            if(m_figures[i][j]->get_figure() == EMPTY || 
-            (m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[i][j].release());
-                m_figures[i][j].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[0] = j + 'A';
-                    tmp[1] = 8 - i + '0';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[i][j].release());
-                m_figures[i][j].reset(tmpp.release());
-                if(m_figures[i][j]->get_figure() != EMPTY) {
-                    break; 
-                }
-            }
-            if(m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() == color) {
-                break;
-            }
-        }
-    }
-    if(verify_coordinates(at_x - 1, at_y - 1)) {
-        std::string tmp = tmp_steps;
-        for(int i = at_x - 1, j = at_y - 1; i >=0 && j >= 0; --i, --j) {
-            if(m_figures[i][j]->get_figure() == EMPTY || 
-            (m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[i][j].release());
-                m_figures[i][j].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[0] = j + 'A';
-                    tmp[1] = 8 - i + '0';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[i][j].release());
-                m_figures[i][j].reset(tmpp.release());
-                if(m_figures[i][j]->get_figure() != EMPTY) {
-                    break; 
-                }
-            }
-            if(m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() == color) {
-                break;
-            }
-        }
-    }
+    evaluate_post_move_for_bishop_queen
+    (at_x, at_y, at_x + 1, at_y + 1, 1, 1, color, ptr, tmp_steps);
+    evaluate_post_move_for_bishop_queen
+    (at_x, at_y, at_x + 1, at_y - 1, 1, -1, color, ptr, tmp_steps);
+    evaluate_post_move_for_bishop_queen
+    (at_x, at_y, at_x - 1, at_y + 1, -1, 1, color, ptr, tmp_steps);
+    evaluate_post_move_for_bishop_queen
+    (at_x, at_y, at_x - 1, at_y - 1, -1, -1, color, ptr, tmp_steps);
 }
 
 void Chess::view_current_king_available_steps(int at_x, int at_y)
@@ -772,14 +562,22 @@ void Chess::view_current_king_available_steps(int at_x, int at_y)
     std::string tmp_steps = current_available_steps;
     current_available_steps = "";
     std::string tmp = tmp_steps;
-    evaluate_post_move(at_x, at_y, at_x - 1, at_y - 1, -1, -1, color, ptr, tmp_steps);
-    evaluate_post_move(at_x, at_y, at_x - 1, at_y, -1, 0, color, ptr, tmp_steps);
-    evaluate_post_move(at_x, at_y, at_x - 1, at_y + 1, -1, 1, color, ptr, tmp_steps);
-    evaluate_post_move(at_x, at_y, at_x, at_y - 1, 0, -1, color, ptr, tmp_steps);
-    evaluate_post_move(at_x, at_y, at_x, at_y + 1, 0, 1, color, ptr, tmp_steps);
-    evaluate_post_move(at_x, at_y, at_x + 1, at_y - 1, 1, -1, color, ptr, tmp_steps);
-    evaluate_post_move(at_x, at_y, at_x + 1, at_y, 1, 0, color, ptr, tmp_steps);
-    evaluate_post_move(at_x, at_y, at_x + 1, at_y + 1, 1, 1, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x - 1, at_y - 1, -1, -1, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x - 1, at_y, -1, 0, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x - 1, at_y + 1, -1, 1, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x, at_y - 1, 0, -1, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x, at_y + 1, 0, 1, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x + 1, at_y - 1, 1, -1, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x + 1, at_y, 1, 0, color, ptr, tmp_steps);
+    evaluate_post_move_for_king_pawn_knight
+    (at_x, at_y, at_x + 1, at_y + 1, 1, 1, color, ptr, tmp_steps);
     int at_x_for_castle {};
     int at_y_for_castle {};
     std::string rook {};
@@ -792,7 +590,8 @@ void Chess::view_current_king_available_steps(int at_x, int at_y)
         at_y_for_castle = 4;
         rook = WHITE_ROOK;
     }
-    evaluate_castle_post_move(at_x, at_y, at_x_for_castle, at_y_for_castle, color, ptr, rook, tmp_steps);
+    evaluate_castle_post_move
+    (at_x, at_y, at_x_for_castle, at_y_for_castle, color, ptr, rook, tmp_steps);
 }
 
 void Chess::evaluate_castle_post_move
@@ -935,243 +734,22 @@ void Chess::view_current_queen_available_steps(int at_x, int at_y)
     }
     std::string tmp_steps = current_available_steps;
     current_available_steps = "";
-    if(verify_coordinates(at_x + 1, at_y)) {
-        std::string tmp = tmp_steps;
-        for(int i = at_x + 1; i < m_figures.size(); ++i) {
-            if(m_figures[i][at_y]->get_figure() == EMPTY ||
-            (m_figures[i][at_y]->get_figure() != EMPTY && 
-            m_figures[i][at_y]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[i][at_y].release());
-                m_figures[i][at_y].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[1] = 8 - i + '0';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[i][at_y].release());
-                m_figures[i][at_y].reset(tmpp.release());
-                if(m_figures[i][at_y]->get_figure() != EMPTY) {
-                    break;
-                }
-            }
-            if(m_figures[i][at_y]->get_figure() != EMPTY && 
-            m_figures[i][at_y]->get_collor() == color) {
-                break;
-            }   
-        }
-    }
-    if(verify_coordinates(at_x - 1, at_y)) {
-        std::string tmp = tmp_steps;
-        for(int i = at_x - 1; i >= 0; --i) {
-            if(m_figures[i][at_y]->get_figure() == EMPTY || 
-            (m_figures[i][at_y]->get_figure() != EMPTY && 
-            m_figures[i][at_y]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[i][at_y].release());
-                m_figures[i][at_y].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[1] = 8 - i + '0';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[i][at_y].release());
-                m_figures[i][at_y].reset(tmpp.release());
-                if(m_figures[i][at_y]->get_figure() != EMPTY) {
-                    break;
-                }
-            }
-            if(m_figures[i][at_y]->get_figure() != EMPTY && 
-            m_figures[i][at_y]->get_collor() == color) {
-                break;
-            }
-        }
-    }
-    if(verify_coordinates(at_x, at_y + 1)) {
-        std::string tmp = tmp_steps;
-        for(int j = at_y + 1; j < m_figures.size(); ++j) {
-            if(m_figures[at_x][j]->get_figure() == EMPTY || 
-            (m_figures[at_x][j]->get_figure() != EMPTY && 
-            m_figures[at_x][j]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[at_x][j].release());
-                m_figures[at_x][j].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[0] = j + 'A';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[at_x][j].release());
-                m_figures[at_x][j].reset(tmpp.release());
-                if(m_figures[at_x][j]->get_figure() != EMPTY) {
-                    break;
-                }
-            }
-            if(m_figures[at_x][j]->get_figure() != EMPTY && 
-            m_figures[at_x][j]->get_collor() == color) {
-                break;
-            }
-        }
-    }
-    if(verify_coordinates(at_x, at_y - 1)) {
-        std::string tmp = tmp_steps;
-        for(int j = at_y - 1; j >= 0; --j) {
-            if(m_figures[at_x][j]->get_figure() == EMPTY || 
-            (m_figures[at_x][j]->get_figure() != EMPTY && 
-            m_figures[at_x][j]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[at_x][j].release());
-                m_figures[at_x][j].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[0] = j + 'A';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[at_x][j].release());
-                m_figures[at_x][j].reset(tmpp.release());
-                if(m_figures[at_x][j]->get_figure() != EMPTY) {
-                    break;
-                }
-            }
-            if(m_figures[at_x][j]->get_figure() != EMPTY && 
-            m_figures[at_x][j]->get_collor() == color) {
-                break;
-            }
-        }
-    }
-    if(verify_coordinates(at_x + 1, at_y + 1)) {
-        std::string tmp = tmp_steps;
-        int i{}, j{};
-        for(i = at_x + 1, j = at_y + 1; i < m_figures.size() && j < m_figures.size(); ++i, ++j) {
-            if(m_figures[i][j]->get_figure() == EMPTY || 
-            (m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[i][j].release());
-                m_figures[i][j].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[0] = j + 'A';
-                    tmp[1] = 8 - i + '0';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[i][j].release());
-                m_figures[i][j].reset(tmpp.release());
-                if(m_figures[i][j]->get_figure() != EMPTY) {
-                    break; 
-                }
-            }
-            if(m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() == color) {
-                break;
-            }   
-        }
-    }
-    if(verify_coordinates(at_x + 1, at_y - 1)) {
-        std::string tmp = tmp_steps;
-        for(int i = at_x + 1, j = at_y - 1; i < m_figures.size() && j >= 0; ++i, --j) {
-            if(m_figures[i][j]->get_figure() == EMPTY || 
-            (m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[i][j].release());
-                m_figures[i][j].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[0] = j + 'A';
-                    tmp[1] = 8 - i + '0';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[i][j].release());
-                m_figures[i][j].reset(tmpp.release());
-                if(m_figures[i][j]->get_figure() != EMPTY) {
-                    break; 
-                }
-            }
-            if(m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() == color) {
-                break;
-            } 
-        }
-    }
-    if(verify_coordinates(at_x - 1, at_y + 1)) {
-        std::string tmp = tmp_steps;
-        for(int i = at_x - 1, j = at_y + 1; i >= 0  && j < m_figures.size(); --i, ++j) {
-            if(m_figures[i][j]->get_figure() == EMPTY || 
-            (m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[i][j].release());
-                m_figures[i][j].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[0] = j + 'A';
-                    tmp[1] = 8 - i + '0';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[i][j].release());
-                m_figures[i][j].reset(tmpp.release());
-                if(m_figures[i][j]->get_figure() != EMPTY) {
-                    break; 
-                }
-            }
-            if(m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() == color) {
-                break;
-            }
-        }
-    }
-    if(verify_coordinates(at_x - 1, at_y - 1)) {
-        std::string tmp = tmp_steps;
-        for(int i = at_x - 1, j = at_y - 1; i >=0 && j >= 0; --i, --j) {
-            if(m_figures[i][j]->get_figure() == EMPTY || 
-            (m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() != color)) {
-                std::unique_ptr<Figure> tmpp;
-                tmpp.reset(m_figures[i][j].release());
-                m_figures[i][j].reset(m_figures[at_x][at_y].release());
-                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-                std::pair<int, int> king_pos = get_kings_position(color);
-                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
-                    tmp[0] = j + 'A';
-                    tmp[1] = 8 - i + '0';
-                    current_available_steps = tmp + current_available_steps;
-                    current_available_steps = " " + current_available_steps;
-                    ++all_available_steps_count;
-                }
-                m_figures[at_x][at_y].reset(m_figures[i][j].release());
-                m_figures[i][j].reset(tmpp.release());
-                if(m_figures[i][j]->get_figure() != EMPTY) {
-                    break; 
-                }
-            }
-            if(m_figures[i][j]->get_figure() != EMPTY && 
-            m_figures[i][j]->get_collor() == color) {
-                break;
-            }
-        }
-    }
+    evaluate_post_move_for_rook_queen
+    (at_x, at_y, at_x + 1, at_y, 1, 0, color, ptr, tmp_steps);
+    evaluate_post_move_for_rook_queen
+    (at_x, at_y, at_x - 1, at_y, -1, 0, color, ptr, tmp_steps);
+    evaluate_post_move_for_rook_queen
+    (at_x, at_y, at_x, at_y + 1, 0, 1, color, ptr, tmp_steps);
+    evaluate_post_move_for_rook_queen
+    (at_x, at_y, at_x, at_y - 1, 0, -1, color, ptr, tmp_steps);
+    evaluate_post_move_for_bishop_queen
+    (at_x, at_y, at_x + 1, at_y + 1, 1, 1, color, ptr, tmp_steps);
+    evaluate_post_move_for_bishop_queen
+    (at_x, at_y, at_x + 1, at_y - 1, 1, -1, color, ptr, tmp_steps);
+    evaluate_post_move_for_bishop_queen
+    (at_x, at_y, at_x - 1, at_y + 1, -1, 1, color, ptr, tmp_steps);
+    evaluate_post_move_for_bishop_queen
+    (at_x, at_y, at_x - 1, at_y - 1, -1, -1, color, ptr, tmp_steps);
 }
 
 void Chess::reset()
@@ -1337,7 +915,7 @@ void Chess::change_pawn(int x, int y)
     print();
 }
 
-void Chess::evaluate_post_move
+void Chess::evaluate_post_move_for_king_pawn_knight
     (int at_x, int at_y, int to_x, int to_y, int x_direction, int y_direction,
     bool color, bool (Chess::*ptr)(int, int) const, const std::string& tmp_steps)
 {
@@ -1363,7 +941,127 @@ void Chess::evaluate_post_move
     }
 }
 
+void Chess::evaluate_post_move_for_bishop_queen
+    (int at_x, int at_y, int to_x, int to_y, int x_direction, int y_direction,
+    bool color, bool (Chess::*ptr)(int, int) const, const std::string& tmp_steps)
+{
+    if(verify_coordinates(to_x, to_y)) {
+        std::string tmp = tmp_steps;
+        int i = to_x;
+        int j = to_y;
+        while((i < m_figures.size() && j < m_figures.size() && x_direction == 1 && y_direction == 1) || 
+         (i < m_figures.size() && j >= 0 && x_direction == 1 && y_direction == -1) ||
+         (i >= 0 && j < m_figures.size() && x_direction == -1 && y_direction == 1) ||
+         (i >= 0 && j >= 0 && x_direction == -1 && y_direction == -1)) {
+            if(m_figures[i][j]->get_figure() == EMPTY || 
+            (m_figures[i][j]->get_figure() != EMPTY && 
+            m_figures[i][j]->get_collor() != color)) {
+                std::unique_ptr<Figure> tmpp;
+                tmpp.reset(m_figures[i][j].release());
+                m_figures[i][j].reset(m_figures[at_x][at_y].release());
+                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
+                std::pair<int, int> king_pos = get_kings_position(color);
+                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
+                    tmp[0] = j + 'A';
+                    tmp[1] = 8 - i + '0';
+                    current_available_steps = tmp + current_available_steps;
+                    current_available_steps = " " + current_available_steps;
+                    ++all_available_steps_count;
+                }
+                m_figures[at_x][at_y].reset(m_figures[i][j].release());
+                m_figures[i][j].reset(tmpp.release());
+                if(m_figures[i][j]->get_figure() != EMPTY) {
+                    break; 
+                }
+            }
+            if(m_figures[i][j]->get_figure() != EMPTY && 
+            m_figures[i][j]->get_collor() == color) {
+                break;
+            }
+            if(x_direction == 1 && y_direction == 1) {
+                ++i;
+                ++j;
+            } else if(x_direction == 1 && y_direction == -1) {
+                ++i;
+                --j;
+            } else if(x_direction == -1 && y_direction == 1) {
+                --i;
+                ++j;
+            } else if(x_direction == -1 && y_direction == -1) {
+                --i;
+                --j;
+            }    
+        }
+    }
+}
+
+void Chess::evaluate_post_move_for_rook_queen
+    (int at_x, int at_y, int to_x, int to_y, int x_direction, int y_direction,
+    bool color, bool (Chess::*ptr)(int, int) const, const std::string& tmp_steps)
+{
+if(verify_coordinates(to_x, to_y)) {
+        std::string tmp = tmp_steps;
+        int i = to_x;
+        int j = to_y;
+        while((i < m_figures.size() && x_direction == 1 && y_direction == 0) || 
+         (i >= 0 && x_direction == -1 && y_direction == 0) ||
+         (j < m_figures.size() && x_direction == 0 && y_direction == 1) ||
+         (j >= 0 && x_direction == 0 && y_direction == -1)) {
+            if(m_figures[i][j]->get_figure() == EMPTY || 
+            (m_figures[i][j]->get_figure() != EMPTY && 
+            m_figures[i][j]->get_collor() != color)) {
+                std::unique_ptr<Figure> tmpp;
+                tmpp.reset(m_figures[i][j].release());
+                m_figures[i][j].reset(m_figures[at_x][at_y].release());
+                m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
+                std::pair<int, int> king_pos = get_kings_position(color);
+                if(!(this->*ptr)(king_pos.first, king_pos.second)) {
+                    tmp[0] = j + 'A';
+                    tmp[1] = 8 - i + '0';
+                    current_available_steps = tmp + current_available_steps;
+                    current_available_steps = " " + current_available_steps;
+                    ++all_available_steps_count;
+                }
+                m_figures[at_x][at_y].reset(m_figures[i][j].release());
+                m_figures[i][j].reset(tmpp.release());
+                if(m_figures[i][j]->get_figure() != EMPTY) {
+                    break; 
+                }
+            }
+            if(m_figures[i][j]->get_figure() != EMPTY && 
+            m_figures[i][j]->get_collor() == color) {
+                break;
+            }
+            if(x_direction == 1 && y_direction == 0) {
+                ++i;
+            } else if(x_direction == -1 && y_direction == 0) {
+                --i;
+            } else if(x_direction == 0 && y_direction == 1) {
+                ++j;
+            } else if(x_direction == 0 && y_direction == -1) {
+                --j;
+            }    
+        }
+    }
+}
+
 void Chess::empty_steps(int at_x, int at_y) {}
+
+bool Chess::is_all_available_figures_are_kings() const
+{
+    int figures_count {};
+    for(int i = 0; i < m_figures.size(); ++i) {
+        for(int j = 0; j < m_figures[i].size(); ++j) {   
+            if(m_figures[i][j]->get_figure() != EMPTY) {
+                ++figures_count;
+            }
+        }
+    }
+    if(figures_count == 2) {
+        return true;
+    }
+    return false;
+}
 
 std::pair<int, int> Chess::get_kings_position(bool color) const
 {

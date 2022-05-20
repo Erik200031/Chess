@@ -38,13 +38,20 @@ private:
     bool is_king_attackable_by_rook_or_queen(int king_x, int king_y, bool color) const;
     bool is_king_attackable_by_bishop_or_queen(int king_x, int king_y, bool color) const;
     bool is_meeting_kings(int king_x, int king_y, bool color) const;
+    bool is_all_available_figures_are_kings() const;
     void change_pawn(int x, int y);
     void empty_steps(int at_x, int at_y);
     void input_coordinates();
     void reset();
     bool check_step(const std::string& input);
     std::pair<int, int> parse_input(const std::string& input);
-    void evaluate_post_move
+    void evaluate_post_move_for_king_pawn_knight
+        (int at_x, int at_y, int to_x, int to_y, int x_direction, int y_direction,
+        bool color, bool (Chess::*ptr)(int, int) const, const std::string& tmp_steps);
+    void evaluate_post_move_for_bishop_queen
+        (int at_x, int at_y, int to_x, int to_y, int x_direction, int y_direction,
+        bool color, bool (Chess::*ptr)(int, int) const, const std::string& tmp_steps);
+    void evaluate_post_move_for_rook_queen
         (int at_x, int at_y, int to_x, int to_y, int x_direction, int y_direction,
         bool color, bool (Chess::*ptr)(int, int) const, const std::string& tmp_steps);
     void evaluate_castle_post_move
