@@ -77,4 +77,6 @@ void Chess_board::print() const
         std::string line (m_width * 5 - 2, '_');
         std::cout << "\n  " << line << '\n'; 
     }
+            std::cout << "  _∀____𐐒____Ↄ____◖____Ǝ____Ⅎ____⅁____H__\n";
+
 }

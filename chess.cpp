@@ -1006,7 +1006,7 @@ void Chess::evaluate_post_move_for_rook_queen
     (int at_x, int at_y, int to_x, int to_y, int x_direction, int y_direction,
     bool color, bool (Chess::*ptr)(int, int) const, const std::string& tmp_steps)
 {
-if(verify_coordinates(to_x, to_y)) {
+    if(verify_coordinates(to_x, to_y)) {
         std::string tmp = tmp_steps;
         int i = to_x;
         int j = to_y;
