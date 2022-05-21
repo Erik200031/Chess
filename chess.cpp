@@ -103,6 +103,7 @@ void Chess::input_coordinates()
     std::cout << "\nAt: ";
     std::string at_input{};
     std::cin >> at_input;
+    at_input[0] = toupper(at_input[0]);
     current_available_steps = at_input;
     std::pair<int, int> tmp = parse_input(at_input);
     while(tmp.first == -1) {
@@ -110,6 +111,7 @@ void Chess::input_coordinates()
         std::cout << "\nBad input! Try again\n";
         std::cout << "\nAt: ";
         std::cin >> at_input;
+        at_input[0] = toupper(at_input[0]);
         current_available_steps = at_input;
         tmp = parse_input(at_input);
     }
@@ -128,6 +130,7 @@ void Chess::input_coordinates()
                 std::cout << "No available steps! ";
                 std::cout << "\nAt: ";
                 std::cin >> at_input;
+                at_input[0] = toupper(at_input[0]);
                 current_available_steps = at_input;
                 tmp = parse_input(at_input);
                 at_y = tmp.first;
@@ -146,6 +149,7 @@ void Chess::input_coordinates()
         std::cout << "\nTo: ";
         std::string to_input{};
         std::cin >> to_input;
+        to_input[0] = toupper(to_input[0]);
         tmp = parse_input(to_input);
         while(tmp.first == -1) {
             print();
@@ -157,6 +161,7 @@ void Chess::input_coordinates()
             }
             std::cout << "\nTo: ";
             std::cin >> to_input;
+            to_input[0] = toupper(to_input[0]);
             tmp = parse_input(to_input);
         }
         int to_y = tmp.first;
@@ -599,8 +604,10 @@ void Chess::evaluate_castle_post_move
     bool color, bool (Chess::*ptr)(int, int) const,
     const std::string& rook, const std::string& tmp_steps)
 {
-    evaluate_king_side_castle_post_move(at_x, at_y, at_x_for_castle, at_y_for_castle, color, ptr, rook, tmp_steps);
-    evaluate_queen_side_castle_post_move(at_x, at_y, at_x_for_castle, at_y_for_castle, color, ptr, rook, tmp_steps);
+    evaluate_king_side_castle_post_move
+    (at_x, at_y, at_x_for_castle, at_y_for_castle, color, ptr, rook, tmp_steps);
+    evaluate_queen_side_castle_post_move
+    (at_x, at_y, at_x_for_castle, at_y_for_castle, color, ptr, rook, tmp_steps);
 }
 
 void Chess::evaluate_king_side_castle_post_move

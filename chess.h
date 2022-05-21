@@ -18,7 +18,7 @@ public:
     Chess();
     ~Chess() = default;
     void play() override;
-private:
+protected:
     bool check_black(int king_x, int king_y) const;
     bool check_white(int king_x, int king_y) const;
     void mate(bool collor);
