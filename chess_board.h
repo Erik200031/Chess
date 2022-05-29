@@ -19,5 +19,4 @@ public:
     void print() const override;
 };
 
-
 #endif //CHESS_BOARD_H

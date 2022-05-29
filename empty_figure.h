@@ -8,8 +8,14 @@
 class Empty_figure : public Figure 
 {
 public:
-    Empty_figure();
-    void set_collor(bool collor) override {}
+    inline Empty_figure();
+    inline void set_collor(bool collor) override {}
 };
+
+Empty_figure::Empty_figure()
+{
+    m_collor = true;
+    m_figure = EMPTY;
+}
 
 #endif //EMPTYFIGURE_H

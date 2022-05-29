@@ -23,13 +23,29 @@ public:
     Figure& operator=(Figure&& rhs) = default;
     virtual ~Figure() = default;
 public:
-    friend std::ostream& operator<<(std::ostream& out, const Figure& obj);
+    inline friend std::ostream& operator<<(std::ostream& out, const Figure& obj);
     virtual void set_collor(bool collor) = 0;
-    bool get_collor() const;
-    std::string get_figure() const;
+    inline bool get_collor() const;
+    inline std::string get_figure() const;
 protected:
     bool m_collor;
     std::string m_figure;
 };
+
+std::ostream& operator<<(std::ostream& out, const Figure& obj)
+{
+    out << obj.m_figure;
+    return out;
+}
+
+bool Figure::get_collor() const 
+{
+    return m_collor;
+}
+
+std::string Figure::get_figure() const
+{
+    return m_figure;
+}
 
 #endif //FIGURE_H
