@@ -129,77 +129,77 @@ Chess/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/build
 .PHONY : Chess/fast
 
-board.o: board.cpp.o
-.PHONY : board.o
+board/board.o: board/board.cpp.o
+.PHONY : board/board.o
 
 # target to build an object file
-board.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/board.cpp.o
-.PHONY : board.cpp.o
+board/board.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/board/board.cpp.o
+.PHONY : board/board.cpp.o
 
-board.i: board.cpp.i
-.PHONY : board.i
+board/board.i: board/board.cpp.i
+.PHONY : board/board.i
 
 # target to preprocess a source file
-board.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/board.cpp.i
-.PHONY : board.cpp.i
+board/board.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/board/board.cpp.i
+.PHONY : board/board.cpp.i
 
-board.s: board.cpp.s
-.PHONY : board.s
+board/board.s: board/board.cpp.s
+.PHONY : board/board.s
 
 # target to generate assembly for a file
-board.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/board.cpp.s
-.PHONY : board.cpp.s
+board/board.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/board/board.cpp.s
+.PHONY : board/board.cpp.s
 
-chess.o: chess.cpp.o
-.PHONY : chess.o
+board/chess_board.o: board/chess_board.cpp.o
+.PHONY : board/chess_board.o
 
 # target to build an object file
-chess.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/chess.cpp.o
-.PHONY : chess.cpp.o
+board/chess_board.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/board/chess_board.cpp.o
+.PHONY : board/chess_board.cpp.o
 
-chess.i: chess.cpp.i
-.PHONY : chess.i
+board/chess_board.i: board/chess_board.cpp.i
+.PHONY : board/chess_board.i
 
 # target to preprocess a source file
-chess.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/chess.cpp.i
-.PHONY : chess.cpp.i
+board/chess_board.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/board/chess_board.cpp.i
+.PHONY : board/chess_board.cpp.i
 
-chess.s: chess.cpp.s
-.PHONY : chess.s
+board/chess_board.s: board/chess_board.cpp.s
+.PHONY : board/chess_board.s
 
 # target to generate assembly for a file
-chess.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/chess.cpp.s
-.PHONY : chess.cpp.s
+board/chess_board.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/board/chess_board.cpp.s
+.PHONY : board/chess_board.cpp.s
 
-chess_board.o: chess_board.cpp.o
-.PHONY : chess_board.o
+game/chess.o: game/chess.cpp.o
+.PHONY : game/chess.o
 
 # target to build an object file
-chess_board.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/chess_board.cpp.o
-.PHONY : chess_board.cpp.o
+game/chess.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/game/chess.cpp.o
+.PHONY : game/chess.cpp.o
 
-chess_board.i: chess_board.cpp.i
-.PHONY : chess_board.i
+game/chess.i: game/chess.cpp.i
+.PHONY : game/chess.i
 
 # target to preprocess a source file
-chess_board.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/chess_board.cpp.i
-.PHONY : chess_board.cpp.i
+game/chess.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/game/chess.cpp.i
+.PHONY : game/chess.cpp.i
 
-chess_board.s: chess_board.cpp.s
-.PHONY : chess_board.s
+game/chess.s: game/chess.cpp.s
+.PHONY : game/chess.s
 
 # target to generate assembly for a file
-chess_board.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/chess_board.cpp.s
-.PHONY : chess_board.cpp.s
+game/chess.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Chess.dir/build.make CMakeFiles/Chess.dir/game/chess.cpp.s
+.PHONY : game/chess.cpp.s
 
 main.o: main.cpp.o
 .PHONY : main.o
@@ -234,15 +234,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Chess"
-	@echo "... board.o"
-	@echo "... board.i"
-	@echo "... board.s"
-	@echo "... chess.o"
-	@echo "... chess.i"
-	@echo "... chess.s"
-	@echo "... chess_board.o"
-	@echo "... chess_board.i"
-	@echo "... chess_board.s"
+	@echo "... board/board.o"
+	@echo "... board/board.i"
+	@echo "... board/board.s"
+	@echo "... board/chess_board.o"
+	@echo "... board/chess_board.i"
+	@echo "... board/chess_board.s"
+	@echo "... game/chess.o"
+	@echo "... game/chess.i"
+	@echo "... game/chess.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

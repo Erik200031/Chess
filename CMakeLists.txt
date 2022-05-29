@@ -8,7 +8,7 @@ project(Chess)
 add_executable(
     Chess
     main.cpp 
-    chess.cpp 
-    board.cpp 
-    chess_board.cpp
+    game/chess.cpp 
+    board/board.cpp 
+    board/chess_board.cpp
 )

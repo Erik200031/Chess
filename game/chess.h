@@ -7,7 +7,7 @@
 #include <string>
 
 #include "game.h"
-#include "chess_board.h"
+#include "../board/chess_board.h"
 
 class Chess;
 typedef std::unordered_map<std::string, void(Chess::*)(int, int)> STEP_FUNCTIONS;
