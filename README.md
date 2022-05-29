@@ -1,3 +1,5 @@
 # Chess
-<h4> This is 2D Chess Game <h4> <br/>
+
+This is 2D Chess Game
+
 ![chess](/board/chess.png)
