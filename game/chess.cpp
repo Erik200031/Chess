@@ -284,7 +284,7 @@ void Chess::view_current_pawn_available_steps(int at_x, int at_y)
         view_current_pawn_initial_steps(at_x, at_y, ptr, step_direction, color, tmp_steps);
     }
     else if((at_x > initial_x && color == BLACK) ||
-    (at_x < initial_x && color == WHITE)){
+    (at_x < initial_x && color == WHITE)) {
         view_current_pawn_not_initial_steps(at_x, at_y, ptr, step_direction, color, tmp_steps);
         view_current_pawn_en_passant_steps(at_x, at_y, ptr, step_direction, color, tmp_steps,
          en_passant_x, enemy_last_pawn_step_one, enemy_last_pawn_step_two, pawn_for_en_passant);

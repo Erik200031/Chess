@@ -26,7 +26,7 @@ public:
     inline friend std::ostream& operator<<(std::ostream& out, const Figure& obj);
     virtual void set_collor(bool collor) = 0;
     inline bool get_collor() const;
-    inline std::string get_figure() const;
+    inline const std::string& get_figure() const;
 protected:
     bool m_collor;
     std::string m_figure;
@@ -43,7 +43,7 @@ bool Figure::get_collor() const
     return m_collor;
 }
 
-std::string Figure::get_figure() const
+const std::string& Figure::get_figure() const
 {
     return m_figure;
 }

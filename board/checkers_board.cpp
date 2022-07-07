@@ -7,9 +7,12 @@ Checkers_board::Checkers_board()
             if((i + j) % 2 != 0 && i < 3) {
                 m_figures[i][j] = std::make_unique<Checker_figure>();
             }
-            else if((i+j)%2!=0 && i>4){
+            else if((i + j) % 2 != 0 && i > 4) {
                 m_figures[i][j] = std::make_unique<Checker_figure>();
                 m_figures[i][j]->set_collor(WHITE);
+            }
+            else {
+                m_figures[i][j] = std::make_unique<Empty_figure>();
             }
         }
     }
