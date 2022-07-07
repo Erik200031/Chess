@@ -6,8 +6,8 @@
 #include <string>
 #include <memory>
 
-#include "../chess_pieces/figure.h"
-#include "../chess_pieces/empty_figure.h"
+#include "../pieces/figure.h"
+#include "../pieces/empty_figure.h"
 
 #define DEFAULT_HEIGHT 8
 #define DEFAULT_WIDTH 8

@@ -4,12 +4,12 @@
 #include <math.h>
 
 #include "board.h"
-#include "../chess_pieces/pawn.h"
-#include "../chess_pieces/rook.h"
-#include "../chess_pieces/knight.h"
-#include "../chess_pieces/bishop.h"
-#include "../chess_pieces/queen.h"
-#include "../chess_pieces/king.h"
+#include "../pieces/pawn.h"
+#include "../pieces/rook.h"
+#include "../pieces/knight.h"
+#include "../pieces/bishop.h"
+#include "../pieces/queen.h"
+#include "../pieces/king.h"
 
 
 class Chess_board : public Board

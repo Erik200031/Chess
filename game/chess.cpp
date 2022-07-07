@@ -85,10 +85,12 @@ void Chess::input_coordinates()
     if(is_all_available_figures_are_kings()) {
         no_one_win();
     }
-    if(turn == WHITE && check_white(white_king_pos.first, white_king_pos.second) && check_all_available_steps()) {
+    if(turn == WHITE && 
+    check_white(white_king_pos.first, white_king_pos.second) && check_all_available_steps()) {
         mate(BLACK);
     }
-    if(turn == BLACK && check_black(black_king_pos.first, black_king_pos.second) && check_all_available_steps()) {
+    if(turn == BLACK && 
+    check_black(black_king_pos.first, black_king_pos.second) && check_all_available_steps()) {
         mate(WHITE);
     }
     if(!check_black(black_king_pos.first, black_king_pos.second) &&
@@ -209,7 +211,8 @@ std::pair<int, int> Chess::parse_input(const std::string& input)
     if(input.size() <= 1 || input.size() > 2) {
         return std::make_pair(-1, -1);
     }
-    else if(((input[0] - 65 >= 0) && (input[0] - 65 <= 7)) && (input[1] >= '1') && (input[1] <= '8')) {
+    else if(((input[0] - 65 >= 0) && (input[0] - 65 <= 7)) &&
+     (input[1] >= '1') && (input[1] <= '8')) {
         return std::make_pair(input[0] - 65, std::stoi(input.substr(1,2)));
     }
     return std::make_pair(-1, -1);
