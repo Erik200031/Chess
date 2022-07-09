@@ -5,13 +5,44 @@
 #include <thread>
 #include <chrono>
 
+#define RED     "\033[31m"      
+#define GREEN   "\033[32m"      
+#define YELLOW  "\033[33m"     
+#define RESET   "\033[0m"
+
 class Game
 {
 public:
     virtual void play() = 0;
+    inline void start() const;
     inline void animation() const;
-    virtual ~Game() { }
+    virtual ~Game() = default;
 };
+
+void Game::start() const
+{
+    #ifdef _WIN32
+        system("cls");
+    #elif defined(_WIN64)
+        system("cls");    
+    #else 
+        system("clear");
+    #endif    
+    std::cout << "______________________________\n";
+    std::cout << "__________GAME STARTED________\n";
+    std::cout << "------------------------------\n\n";
+    int ch;
+    std::cout << RED << " 0.EXIT\n" << GREEN <<" 1.CONTINUE\n "<<
+    RESET << " \nEnter your choice:  _\b";
+    std::cin >> ch;
+    if(!std::cin.good()) {
+        std::cout << "ERROR Undefined Input!!\n";
+        exit(0);
+    }
+    if(ch == 0) {
+        exit(0);
+    }
+}
 
 void Game::animation() const
 {
@@ -43,7 +74,14 @@ label0:
     ++counter;
     std::cout << "\n\n";
     std::cout << "LOADING\n\n";
-    std::cout << tmp_anim << std::endl;
+    if(counter < 33) {
+        std::cout << RED << tmp_anim << std::endl;
+    } else if(counter >= 33 && counter <= 66) {
+        std::cout << YELLOW << tmp_anim << std::endl;
+    } else if(counter > 66) {
+        std::cout << GREEN << tmp_anim << std::endl;
+    }
+
     if(counter % 5 == 0) {
         tmp_anim = "|" + tmp_anim;
         goto lbltmp;
@@ -61,7 +99,7 @@ lbl4:
     #else 
         system("clear");
     #endif
+    std::cout << RESET;
 }
-
 
 #endif //GAME_H

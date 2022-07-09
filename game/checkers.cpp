@@ -2,6 +2,7 @@
 
 void Checkers::play() 
 {
+    start();
     animation();
     #ifdef _WIN32
         system("cls");
@@ -20,7 +21,7 @@ void Checkers::play()
     } else {m_back_eat_flag = false;}
     m_turn = WHITE;
     print();
-    while (!!true)
+    while (true)
     {
         input_coordinates();
     }
@@ -163,11 +164,63 @@ void Checkers::view_current_available_steps_left_non_queen(int at_x, int at_y)
         current_available_steps[current_available_steps.size() - 1]
         = 8 - at_x + '0' - 2 * direction;
     }
-    std::cout << current_available_steps;
 }
 
 void Checkers::view_current_available_steps_left_non_queen_helper
  (int at_x, int at_y)
 {
 
+}
+
+void Checkers::view_current_available_steps_right_non_queen(int at_x, int at_y)
+{
+    current_available_steps = "";
+    std::string tmp_figure;
+    std::string enemy_figure;
+    std::string enemy_queen;
+    int direction;
+    if(m_figures[at_x][at_y]->get_figure() == WHITE_FIGURE) {
+        tmp_figure = WHITE_FIGURE;
+        enemy_figure = BLACK_FIGURE;
+        enemy_queen = BLACK_QUEEN;
+        direction = 1;
+    } else {
+        tmp_figure = BLACK_FIGURE;
+        enemy_figure = WHITE_FIGURE;
+        enemy_queen = WHITE_QUEEN;
+        direction = -1;
+    }
+    if(m_figures[at_x][at_y]->get_figure() == tmp_figure &&
+     verify_coordinates(at_x - 1 * direction, at_y - 1) && 
+    m_figures[at_x - 1 * direction][at_y - 1]->get_figure() == EMPTY) {
+        /* 3 space for edit chars */
+        current_available_steps += "   ";                       
+        current_available_steps[current_available_steps.size() - 2]
+        = at_y + 'A' - 1;
+        current_available_steps[current_available_steps.size() - 1]
+        = 8 - at_x + '0' + 1 * direction;
+    }
+    else if(m_figures[at_x][at_y]->get_figure() == tmp_figure && 
+     verify_coordinates(at_x - 1 * direction, at_y - 1) && 
+     (m_figures[at_x - 1 * direction][at_y - 1]->get_figure() == enemy_figure ||
+     m_figures[at_x - 1 * direction][at_y - 1]->get_figure() == enemy_queen) && 
+     (verify_coordinates(at_x - 2 * direction, at_y - 2))) {
+        /* 3 space for edit chars */
+        current_available_steps += "   ";                       
+        current_available_steps[current_available_steps.size() - 2]
+        = at_y + 'A' - 2;
+        current_available_steps[current_available_steps.size() - 1]
+        = 8 - at_x + '0' + 2 * direction; 
+    }
+    if(m_back_eat_flag && (m_figures[at_x][at_y]->get_figure() == tmp_figure && 
+     verify_coordinates(at_x + 1 * direction, at_y - 1) && 
+     (m_figures[at_x + 1 * direction][at_y - 1]->get_figure() == enemy_figure ||
+     m_figures[at_x + 1 * direction][at_y - 1]->get_figure() == enemy_queen)) && 
+     (verify_coordinates(at_x + 2 * direction, at_y - 2))) {
+        current_available_steps += "   ";                       
+        current_available_steps[current_available_steps.size() - 2]
+        = at_y + 'A' - 2;
+        current_available_steps[current_available_steps.size() - 1]
+        = 8 - at_x + '0' - 2 * direction;
+    }
 }

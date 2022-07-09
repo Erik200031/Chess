@@ -1244,6 +1244,8 @@ bool Chess::is_meeting_kings(int king_x, int king_y, bool color) const
 
 void Chess::play() 
 {
+    start();
+    animation();
     turn = WHITE;
     end_game = false;
     all_passed_steps = "";
