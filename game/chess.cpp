@@ -153,7 +153,7 @@ void Chess::input_coordinates()
         std::cin >> to_input;
         to_input[0] = toupper(to_input[0]);
         tmp = parse_input(to_input);
-        while(tmp.first == -1) {
+        while(tmp.first == -1) {    
             print();
             std::cout << "\nBad input! Try again\n";
             if(current_available_steps.size() <= 2) {
@@ -167,7 +167,7 @@ void Chess::input_coordinates()
             tmp = parse_input(to_input);
         }
         int to_y = tmp.first;
-        int to_x = m_figures.size() - 1 - tmp.second + 1;
+        int to_x = m_figures.size() - tmp.second;
         if(check_step(to_input)) {
             m_figures[to_x][to_y].reset(m_figures[at_x][at_y].release());
             m_figures[at_x][at_y] = std::make_unique<Empty_figure>();

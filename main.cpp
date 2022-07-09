@@ -9,5 +9,4 @@ int main() {
     Game* ptr = new Checkers();
     ptr->play();
     delete ptr;
-   
 }

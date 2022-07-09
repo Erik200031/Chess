@@ -16,7 +16,7 @@ class Chess : public Game, private Chess_board
 {
 public:
     Chess();
-    ~Chess() = default;
+    ~Chess() { }
     void play() override;
 protected:
     bool check_black(int king_x, int king_y) const;
