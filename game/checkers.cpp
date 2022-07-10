@@ -33,6 +33,9 @@ void Checkers::input_coordinates()
     std::string at_input;
 checker:
     print();
+    if(bad_input) {
+        std::cout << "\nBad input! Try again\n";
+    }
     m_turn == WHITE ? std::cout << "\nTURN -> WHITE\n" : std::cout <<  "\nTURN -> BLACK\n";
     std::cout << "\nAt: ";
     std::cin >> at_input;
@@ -80,15 +83,71 @@ checker:
         } else {
             std::cout << "Available steps -> " << current_available_steps;
         }
+        std::cout << "\nTo: ";
+        std::cin >> to_input;
+        to_input[0] = toupper(to_input[0]);
+        parsed = parse_input(to_input);
     }
     int to_y = parsed.first;
     int to_x = m_figures.size() - parsed.second;
+    if(check_step(to_input)) {
+        bad_input = false;
+        if(to_x - at_x == abs(-2)) {
+            erase_enemys_piece(at_x, at_y, to_x, to_y);
+        }
+        m_figures[to_x][to_y].reset(m_figures[at_x][at_y].release());
+        m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
+        view_current_available_steps(to_x, to_y);
+        if(!is_have_any_steps(to_x)) {
+            m_turn == BLACK ? m_turn = WHITE: m_turn = BLACK;
+        }
+    } else {
+        bad_input = true;
+    }
+}
 
+bool Checkers::is_have_any_steps(int at_x)
+{
+    std::string tmp;
+    std::stringstream str(current_available_steps);
+    int n;
+    while(!str.eof())
+    {
+        tmp = "";
+        str >> tmp;
+        std::cout << tmp << '\n';
+        std::cin >> n;
+        if((tmp[1] - '0') - at_x == abs(-2)) {
+            return true;
+        }
+    }
+    return false;
+}
 
+void Checkers::erase_enemys_piece(int at_x, int at_y, int to_x, int to_y)
+{
+    if(at_x - to_x == -2 && at_y - to_y == -2) {
+        m_figures[at_x + 1][at_y + 1] = std::make_unique<Empty_figure>();
+    }
+}
 
-    m_figures[to_x][to_y].reset(m_figures[at_x][at_y].release());
-    m_figures[at_x][at_y] = std::make_unique<Empty_figure>();
-    m_turn == BLACK ? m_turn = WHITE: m_turn = BLACK;
+bool Checkers::check_step(const std::string& input)
+{
+    std::string tmp{};
+    for(int i = 0; i < current_available_steps.size(); ++i) {
+        if(current_available_steps[i] != ' ') {
+            tmp += current_available_steps[i];
+        } else {
+            if(input == tmp) {
+                return true;
+            }
+            tmp = "";
+        }
+    }
+    if(input == tmp) {
+        return true;
+    }
+    return false;
 }
 
 bool Checkers::verify_coordinates(int x, int y) const 
@@ -111,6 +170,7 @@ std::pair<int, int> Checkers::parse_input(const std::string& input)
 void Checkers::view_current_available_steps(int at_x, int at_y)
 {
     view_current_available_steps_left_non_queen(at_x, at_y);
+    view_current_available_steps_right_non_queen(at_x, at_y);
 }
 
 void Checkers::view_current_available_steps_left_non_queen(int at_x, int at_y)
@@ -151,7 +211,7 @@ void Checkers::view_current_available_steps_left_non_queen(int at_x, int at_y)
         current_available_steps[current_available_steps.size() - 2]
         = at_y + 'A' - 2;
         current_available_steps[current_available_steps.size() - 1]
-        = 8 - at_x + '0' + 2 * direction; 
+        = 8 - at_x + '0' - 2 * direction; 
     }
     if(m_back_eat_flag && (m_figures[at_x][at_y]->get_figure() == tmp_figure && 
      verify_coordinates(at_x + 1 * direction, at_y - 1) && 
@@ -162,19 +222,12 @@ void Checkers::view_current_available_steps_left_non_queen(int at_x, int at_y)
         current_available_steps[current_available_steps.size() - 2]
         = at_y + 'A' - 2;
         current_available_steps[current_available_steps.size() - 1]
-        = 8 - at_x + '0' - 2 * direction;
+        = 8 - at_x + '0' + 2 * direction;
     }
-}
-
-void Checkers::view_current_available_steps_left_non_queen_helper
- (int at_x, int at_y)
-{
-
 }
 
 void Checkers::view_current_available_steps_right_non_queen(int at_x, int at_y)
 {
-    current_available_steps = "";
     std::string tmp_figure;
     std::string enemy_figure;
     std::string enemy_queen;
@@ -191,35 +244,35 @@ void Checkers::view_current_available_steps_right_non_queen(int at_x, int at_y)
         direction = -1;
     }
     if(m_figures[at_x][at_y]->get_figure() == tmp_figure &&
-     verify_coordinates(at_x - 1 * direction, at_y - 1) && 
-    m_figures[at_x - 1 * direction][at_y - 1]->get_figure() == EMPTY) {
+     verify_coordinates(at_x - 1 * direction, at_y + 1) && 
+    m_figures[at_x - 1 * direction][at_y + 1]->get_figure() == EMPTY) {
         /* 3 space for edit chars */
         current_available_steps += "   ";                       
         current_available_steps[current_available_steps.size() - 2]
-        = at_y + 'A' - 1;
+        = at_y + 'A' + 1;
         current_available_steps[current_available_steps.size() - 1]
         = 8 - at_x + '0' + 1 * direction;
     }
     else if(m_figures[at_x][at_y]->get_figure() == tmp_figure && 
-     verify_coordinates(at_x - 1 * direction, at_y - 1) && 
-     (m_figures[at_x - 1 * direction][at_y - 1]->get_figure() == enemy_figure ||
-     m_figures[at_x - 1 * direction][at_y - 1]->get_figure() == enemy_queen) && 
-     (verify_coordinates(at_x - 2 * direction, at_y - 2))) {
+     verify_coordinates(at_x - 1 * direction, at_y + 1) && 
+     (m_figures[at_x - 1 * direction][at_y + 1]->get_figure() == enemy_figure ||
+     m_figures[at_x - 1 * direction][at_y + 1]->get_figure() == enemy_queen) && 
+     (verify_coordinates(at_x - 2 * direction, at_y + 2))) {
         /* 3 space for edit chars */
         current_available_steps += "   ";                       
         current_available_steps[current_available_steps.size() - 2]
-        = at_y + 'A' - 2;
+        = at_y + 'A' + 2;
         current_available_steps[current_available_steps.size() - 1]
         = 8 - at_x + '0' + 2 * direction; 
     }
     if(m_back_eat_flag && (m_figures[at_x][at_y]->get_figure() == tmp_figure && 
-     verify_coordinates(at_x + 1 * direction, at_y - 1) && 
-     (m_figures[at_x + 1 * direction][at_y - 1]->get_figure() == enemy_figure ||
-     m_figures[at_x + 1 * direction][at_y - 1]->get_figure() == enemy_queen)) && 
+     verify_coordinates(at_x + 1 * direction, at_y + 1) && 
+     (m_figures[at_x + 1 * direction][at_y + 1]->get_figure() == enemy_figure ||
+     m_figures[at_x + 1 * direction][at_y + 1]->get_figure() == enemy_queen)) && 
      (verify_coordinates(at_x + 2 * direction, at_y - 2))) {
         current_available_steps += "   ";                       
         current_available_steps[current_available_steps.size() - 2]
-        = at_y + 'A' - 2;
+        = at_y + 'A' + 2;
         current_available_steps[current_available_steps.size() - 1]
         = 8 - at_x + '0' - 2 * direction;
     }

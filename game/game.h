@@ -4,6 +4,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <sstream>
 
 #define RED     "\033[31m"      
 #define GREEN   "\033[32m"      
@@ -57,6 +58,7 @@ void Game::animation() const
     #endif
     int counter {};
     std::string tmp_anim = "|";
+    std::string tmp_anim2 = "|";
 label0:
     if(counter == 100) {
         goto lbl4;
@@ -70,10 +72,11 @@ label0:
         system("clear");
     #endif
     goto label1;
-    label1:
+label1:
     ++counter;
     std::cout << "\n\n";
     std::cout << "LOADING\n\n";
+    std::cout << "____________________\n";
     if(counter < 33) {
         std::cout << RED << tmp_anim << std::endl;
     } else if(counter >= 33 && counter <= 66) {
@@ -81,9 +84,17 @@ label0:
     } else if(counter > 66) {
         std::cout << GREEN << tmp_anim << std::endl;
     }
-
+    if(counter < 33) {
+        std::cout << RED << tmp_anim2 << std::endl;
+    } else if(counter >= 33 && counter <= 66) {
+        std::cout << YELLOW << tmp_anim2 << std::endl;
+    } else if(counter > 66) {
+        std::cout << GREEN << tmp_anim2 << std::endl;
+    }
+    std::cout << "____________________";
     if(counter % 5 == 0) {
         tmp_anim = "|" + tmp_anim;
+        tmp_anim2 = "|" + tmp_anim2;
         goto lbltmp;
     }
 lbltmp:
